@@ -1,0 +1,874 @@
+local cuffanim = "http://www.roblox.com/Asset?ID=2027914996"
+local anim = Instance.new("Animation")
+local main = Instance.new("ScreenGui")
+local frame = Instance.new("Frame")
+local username = Instance.new("TextBox")
+local prankbutton = Instance.new("TextButton")
+local hidebutton = Instance.new("TextButton") -- Hide button
+local titleLabel = Instance.new("TextLabel") -- Title label
+local backgroundParticles = Instance.new("Frame") -- Particle effect background
+local notpranking = true
+local plr = game.Players.LocalPlayer
+local debounce = true
+local TweenService = game:GetService("TweenService") -- For animations
+
+-- Animation setup
+anim.AnimationId = cuffanim
+main.ResetOnSpawn = false
+local PlayAnimation = plr.Character.Humanoid:LoadAnimation(anim)
+
+-- Particle background for extra style
+backgroundParticles.Size = UDim2.new(1, 0, 1, 0)
+backgroundParticles.BackgroundTransparency = 1
+backgroundParticles.ZIndex = 0
+backgroundParticles.Parent = frame
+
+-- Add particles (small glowing dots)
+for i = 1, 20 do
+    local particle = Instance.new("Frame")
+    particle.BorderSizePixel = 0
+    particle.BackgroundColor3 = Color3.fromRGB(150, 255, 150)
+    particle.BackgroundTransparency = math.random(0, 0.7)
+    particle.Size = UDim2.new(0, math.random(2, 5), 0, math.random(2, 5))
+    particle.Position = UDim2.new(math.random(), 0, math.random(), 0)
+    particle.ZIndex = 0
+    
+    -- Make particles glow
+    local particleGlow = Instance.new("UIGradient")
+    particleGlow.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 255, 200)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 255, 100))
+    })
+    particleGlow.Parent = particle
+    
+    -- Animate particles
+    spawn(function()
+        while wait(0.1) do
+            local randomMove = TweenService:Create(
+                particle,
+                TweenInfo.new(math.random(3, 8), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+                {Position = UDim2.new(math.random(), 0, math.random(), 0)}
+            )
+            randomMove:Play()
+        end
+    end)
+    
+    particle.Parent = backgroundParticles
+end
+
+-- Create a decorative border design
+local borderDecoration = Instance.new("Frame")
+borderDecoration.Size = UDim2.new(1, 0, 1, 0)
+borderDecoration.BackgroundTransparency = 1
+borderDecoration.ZIndex = 0
+borderDecoration.Parent = frame
+
+-- Add corner decorations for artistic style
+for _, position in pairs({
+    UDim2.new(0, 0, 0, 0),
+    UDim2.new(1, -15, 0, 0),
+    UDim2.new(0, 0, 1, -15),
+    UDim2.new(1, -15, 1, -15)
+}) do
+    local corner = Instance.new("ImageLabel")
+    corner.Size = UDim2.new(0, 15, 0, 15)
+    corner.Position = position
+    corner.BackgroundTransparency = 1
+    corner.Image = "rbxassetid://5756952291" -- Decorative corner asset
+    corner.ImageColor3 = Color3.fromRGB(150, 255, 150)
+    corner.ZIndex = 10
+    corner.Parent = borderDecoration
+end
+
+-- Frame setup with enhanced visuals
+frame.Selectable = true
+frame.Active = true
+frame.Draggable = true -- Already draggable as requested
+frame.Size = UDim2.new(0.25, 0, 0.3, 0) -- Larger frame
+frame.Position = UDim2.new(0.5, 0, 0.4, 0) -- Center position
+frame.BackgroundColor3 = Color3.fromRGB(10, 20, 10) -- Very dark background to make bright green pop
+frame.BorderSizePixel = 0 -- Remove border
+frame.ClipsDescendants = true -- For particle effects
+
+-- Add bloom effect to the entire frame
+local bloom = Instance.new("BloomEffect")
+bloom.Intensity = 0.8
+bloom.Size = 24
+bloom.Threshold = 0.5
+
+-- Add rounded corners with higher radius
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0.08, 0) -- More rounded corners
+UICorner.Parent = frame
+
+-- Use brighter green gradient
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 180, 40)), -- Bright green
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(100, 255, 100)), -- Super bright green
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 180, 40)) -- Bright green
+})
+UIGradient.Parent = frame
+
+-- Enhanced glow effect with larger thickness
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Thickness = 3.5
+UIStroke.Color = Color3.fromRGB(150, 255, 150) -- Very bright green
+UIStroke.Transparency = 0.2
+UIStroke.Parent = frame
+
+-- Create an outer glow
+local outerGlow = Instance.new("Frame")
+outerGlow.Size = UDim2.new(1, 20, 1, 20)
+outerGlow.Position = UDim2.new(0, -10, 0, -10)
+outerGlow.BackgroundColor3 = Color3.fromRGB(150, 255, 150)
+outerGlow.BackgroundTransparency = 0.8
+outerGlow.ZIndex = -1
+outerGlow.Parent = frame
+
+local outerGlowCorner = Instance.new("UICorner")
+outerGlowCorner.CornerRadius = UDim.new(0.1, 0)
+outerGlowCorner.Parent = outerGlow
+
+-- Stylish title with special font
+titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "✧ Player Cuffer ✧"
+titleLabel.TextColor3 = Color3.fromRGB(220, 255, 220) -- Very light green text
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.Fantasy -- More artistic font
+titleLabel.ZIndex = 2
+titleLabel.Parent = frame
+
+-- Add text stroke for more visibility
+local titleStroke = Instance.new("UIStroke")
+titleStroke.Thickness = 1.5
+titleStroke.Color = Color3.fromRGB(30, 200, 30)
+titleStroke.Parent = titleLabel
+
+-- Create a decorative underline
+local underline = Instance.new("Frame")
+underline.Size = UDim2.new(0.8, 0, 0, 2)
+underline.Position = UDim2.new(0.1, 0, 0.2, -4)
+underline.BackgroundColor3 = Color3.fromRGB(150, 255, 150)
+underline.BorderSizePixel = 0
+underline.Parent = frame
+
+-- Stylish textbox with light green theme
+username.Position = UDim2.new(0.1, 0, 0.3, 0)
+username.Size = UDim2.new(0.8, 0, 0.2, 0)
+username.BackgroundColor3 = Color3.fromRGB(20, 40, 20)
+username.TextColor3 = Color3.fromRGB(180, 255, 180) -- Bright green text
+username.PlaceholderColor3 = Color3.fromRGB(120, 230, 120) -- Brighter green placeholder
+username.PlaceholderText = "✎ Enter Username..."
+username.Text = ""
+username.TextScaled = true
+username.Font = Enum.Font.Arcade -- Special font
+username.Parent = frame
+
+-- Add textbox glow
+local usernameStroke = Instance.new("UIStroke")
+usernameStroke.Thickness = 2
+usernameStroke.Color = Color3.fromRGB(100, 255, 100)
+usernameStroke.Parent = username
+
+-- Add rounded corners to textbox
+local textboxCorner = Instance.new("UICorner")
+textboxCorner.CornerRadius = UDim.new(0.3, 0) -- More rounded corners
+textboxCorner.Parent = username
+
+-- Add brighter gradient to textbox
+local textboxGradient = Instance.new("UIGradient")
+textboxGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 100, 30)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 150, 50))
+})
+textboxGradient.Parent = username
+
+-- Stylish cuff button with bright green theme
+prankbutton.Size = UDim2.new(0.8, 0, 0.2, 0)
+prankbutton.Position = UDim2.new(0.1, 0, 0.55, 0)
+prankbutton.BackgroundColor3 = Color3.fromRGB(40, 120, 40)
+prankbutton.TextColor3 = Color3.fromRGB(220, 255, 220)
+prankbutton.Text = "⚡ CUFF ⚡"
+prankbutton.TextScaled = true
+prankbutton.Font = Enum.Font.SciFi -- Sci-fi font for futuristic look
+prankbutton.Parent = frame
+
+-- Add glowing border to button
+local prankButtonStroke = Instance.new("UIStroke")
+prankButtonStroke.Thickness = 2
+prankButtonStroke.Color = Color3.fromRGB(150, 255, 150)
+prankButtonStroke.Parent = prankbutton
+
+-- Add rounded corners to button
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0.3, 0) -- More rounded corners
+buttonCorner.Parent = prankbutton
+
+-- Add brighter gradient to button
+local buttonGradient = Instance.new("UIGradient")
+buttonGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 180, 50)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 255, 100))
+})
+buttonGradient.Parent = prankbutton
+
+-- Moved hide button to bottom left with light green theme
+hidebutton.Size = UDim2.new(0.35, 0, 0.15, 0)
+hidebutton.Position = UDim2.new(0.1, 0, 0.8, 0) -- Bottom left position
+hidebutton.BackgroundColor3 = Color3.fromRGB(30, 100, 30)
+hidebutton.TextColor3 = Color3.fromRGB(200, 255, 200)
+hidebutton.Text = "Hide"
+hidebutton.TextScaled = true
+hidebutton.Font = Enum.Font.Arcade -- Special font
+hidebutton.Parent = frame
+
+-- Add glowing border to hide button
+local hideButtonStroke = Instance.new("UIStroke")
+hideButtonStroke.Thickness = 1.5
+hideButtonStroke.Color = Color3.fromRGB(100, 255, 100)
+hideButtonStroke.Parent = hidebutton
+
+-- Add rounded corners to hide button
+local hideButtonCorner = Instance.new("UICorner")
+hideButtonCorner.CornerRadius = UDim.new(0.3, 0) -- More rounded corners
+hideButtonCorner.Parent = hidebutton
+
+-- Add brighter gradient to hide button
+local hideButtonGradient = Instance.new("UIGradient")
+hideButtonGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 150, 40)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(80, 200, 80))
+})
+hideButtonGradient.Parent = hidebutton
+
+-- Add frame to ScreenGui
+frame.Parent = main
+main.Parent = plr.PlayerGui
+
+-- Function to check if animation is playing
+function check(humanoid)
+    local m = humanoid:GetPlayingAnimationTracks()
+    for i = 1, #m do
+        if m[i].Animation.AnimationId == cuffanim then
+            return m[i]
+        end
+    end
+    return false
+end
+
+-- Enhanced floating animation with more dramatic movement
+local function setupFloatingAnimation()
+    local info = TweenInfo.new(
+        3, -- Slower time for more dramatic effect
+        Enum.EasingStyle.Sine, -- Smooth sine wave
+        Enum.EasingDirection.InOut, -- Both ways
+        -1, -- Repeat infinitely
+        true -- Yoyo back and forth
+    )
+    
+    local properties = {
+        Position = frame.Position + UDim2.new(0, 0, 0.03, 0) -- Move more dramatically up
+    }
+    
+    local tween = TweenService:Create(frame, info, properties)
+    tween:Play()
+    
+    -- Add slight rotation for more style
+    local rotInfo = TweenInfo.new(
+        8, -- Time
+        Enum.EasingStyle.Sine,
+        Enum.EasingDirection.InOut,
+        -1, -- Repeat infinitely
+        true -- Yoyo back and forth
+    )
+    
+    local rotProperties = {
+        Rotation = 2 -- Slight rotation for style
+    }
+    
+    local rotTween = TweenService:Create(frame, rotInfo, rotProperties)
+    rotTween:Play()
+end
+
+-- Enhanced breathing glow effect
+local function setupBreathingGlow()
+    -- Main border glow effect
+    local info = TweenInfo.new(
+        2, -- Faster time for more dramatic effect
+        Enum.EasingStyle.Sine,
+        Enum.EasingDirection.InOut,
+        -1, -- Repeat infinitely
+        true -- Yoyo back and forth
+    )
+    
+    local properties = {
+        Thickness = 5 -- Increased max thickness
+    }
+    
+    local tween = TweenService:Create(UIStroke, info, properties)
+    tween:Play()
+    
+    -- Animate the gradient rotation for shifting colors
+    local gradientInfo = TweenInfo.new(
+        6, -- Time
+        Enum.EasingStyle.Linear,
+        Enum.EasingDirection.In,
+        -1, -- Repeat infinitely
+        false -- Don't yoyo
+    )
+    
+    local gradientProperties = {
+        Rotation = 360 -- Full rotation
+    }
+    
+    local gradientTween = TweenService:Create(UIGradient, gradientInfo, gradientProperties)
+    gradientTween:Play()
+    
+    -- Pulsating transparency for the primary glow
+    local pulseInfo = TweenInfo.new(
+        1.5, -- Faster for more noticeable effect
+        Enum.EasingStyle.Sine,
+        Enum.EasingDirection.InOut,
+        -1,
+        true
+    )
+    
+    local pulseProperties = {
+        Transparency = 0.6
+    }
+    
+    local pulseTween = TweenService:Create(UIStroke, pulseInfo, pulseProperties)
+    pulseTween:Play()
+    
+    -- Animate the outer glow as well
+    local outerGlowPulse = TweenInfo.new(
+        2.2, -- Different timing than main stroke for interesting effect
+        Enum.EasingStyle.Sine,
+        Enum.EasingDirection.InOut,
+        -1,
+        true
+    )
+    
+    local outerGlowProperties = {
+        BackgroundTransparency = 0.95
+    }
+    
+    local outerGlowTween = TweenService:Create(outerGlow, outerGlowPulse, outerGlowProperties)
+    outerGlowTween:Play()
+    
+    -- Animate size of outer glow for more dramatic effect
+    local outerGlowSizePulse = TweenInfo.new(
+        3.5,
+        Enum.EasingStyle.Sine,
+        Enum.EasingDirection.InOut,
+        -1,
+        true
+    )
+    
+    local outerGlowSizeProperties = {
+        Size = UDim2.new(1, 30, 1, 30),
+        Position = UDim2.new(0, -15, 0, -15)
+    }
+    
+    local outerGlowSizeTween = TweenService:Create(outerGlow, outerGlowSizePulse, outerGlowSizeProperties)
+    outerGlowSizeTween:Play()
+    
+    -- Animate underline
+    local underlinePulse = TweenInfo.new(
+        2,
+        Enum.EasingStyle.Sine,
+        Enum.EasingDirection.InOut,
+        -1,
+        true
+    )
+    
+    local underlineSizeProperties = {
+        Size = UDim2.new(0.9, 0, 0, 2),
+        Position = UDim2.new(0.05, 0, 0.2, -4)
+    }
+    
+    local underlineSizeTween = TweenService:Create(underline, underlinePulse, underlineSizeProperties)
+    underlineSizeTween:Play()
+    
+    -- Special text color animation
+    local textColorInfo = TweenInfo.new(
+        4,
+        Enum.EasingStyle.Sine,
+        Enum.EasingDirection.InOut,
+        -1,
+        true
+    )
+    
+    local textColorProperties = {
+        TextColor3 = Color3.fromRGB(150, 255, 150) -- Slightly darker to pulse back and forth
+    }
+    
+    local textColorTween = TweenService:Create(titleLabel, textColorInfo, textColorProperties)
+    textColorTween:Play()
+end
+
+-- Create a special hovering effect for buttons
+local function setupButtonEffects()
+    -- Hover effect for pranking button
+    prankbutton.MouseEnter:Connect(function()
+        TweenService:Create(
+            prankbutton,
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundColor3 = Color3.fromRGB(100, 255, 100), Size = UDim2.new(0.85, 0, 0.22, 0)}
+        ):Play()
+        
+        TweenService:Create(
+            prankButtonStroke,
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {Thickness = 3}
+        ):Play()
+    end)
+    
+    prankbutton.MouseLeave:Connect(function()
+        TweenService:Create(
+            prankbutton,
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundColor3 = Color3.fromRGB(40, 120, 40), Size = UDim2.new(0.8, 0, 0.2, 0)}
+        ):Play()
+        
+        TweenService:Create(
+            prankButtonStroke,
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {Thickness = 2}
+        ):Play()
+    end)
+    
+    -- Hover effect for hide button
+    hidebutton.MouseEnter:Connect(function()
+        TweenService:Create(
+            hidebutton,
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundColor3 = Color3.fromRGB(80, 200, 80), Size = UDim2.new(0.37, 0, 0.16, 0)}
+        ):Play()
+    end)
+    
+    hidebutton.MouseLeave:Connect(function()
+        TweenService:Create(
+            hidebutton,
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundColor3 = Color3.fromRGB(30, 100, 30), Size = UDim2.new(0.35, 0, 0.15, 0)}
+        ):Play()
+    end)
+end
+
+-- Start the animations
+setupFloatingAnimation()
+setupBreathingGlow()
+setupButtonEffects()
+
+-- Enhanced cuffing functionality with visual effects
+prankbutton.MouseButton1Down:Connect(function()
+    -- Create click effect
+    local clickEffect = Instance.new("Frame")
+    clickEffect.Size = UDim2.new(0, 0, 0, 0)
+    clickEffect.Position = UDim2.new(0.5, 0, 0.5, 0)
+    clickEffect.AnchorPoint = Vector2.new(0.5, 0.5)
+    clickEffect.BackgroundColor3 = Color3.fromRGB(150, 255, 150)
+    clickEffect.BackgroundTransparency = 0
+    clickEffect.ZIndex = 5
+    clickEffect.Parent = prankbutton
+    
+    local clickCorner = Instance.new("UICorner")
+    clickCorner.CornerRadius = UDim.new(1, 0) -- Perfect circle
+    clickCorner.Parent = clickEffect
+    
+    -- Animate the click ripple
+    TweenService:Create(
+        clickEffect,
+        TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {Size = UDim2.new(2, 0, 2, 0), BackgroundTransparency = 1}
+    ):Play()
+    
+    spawn(function()
+        wait(0.5)
+        clickEffect:Destroy()
+    end)
+    
+    if notpranking then
+        local allplayers = game.Players:GetChildren()
+        local s = nil
+        for i = 1, #allplayers do
+            if string.find(string.lower(allplayers[i].Name), string.lower(username.Text)) and username.Text ~= '' then
+                s = allplayers[i]
+                break
+            end
+        end
+
+        if s then
+            notpranking = false
+            prankbutton.Text = "⚡ STOP ⚡"
+            
+            -- Add success effect animation
+            local successAnim = TweenService:Create(
+                prankbutton,
+                TweenInfo.new(0.3, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out),
+                {BackgroundColor3 = Color3.fromRGB(100, 255, 100)}
+            )
+            successAnim:Play()
+            
+            local PlayAnimation = plr.Character:WaitForChild("Humanoid"):LoadAnimation(anim)
+            PlayAnimation:Play()
+            local character = s.Character
+            local currentSpeed = 0
+            local pos = character.HumanoidRootPart.Position
+            
+            -- Create status indicator
+            local statusLabel = Instance.new("TextLabel")
+            statusLabel.Size = UDim2.new(0.8, 0, 0.1, 0)
+            statusLabel.Position = UDim2.new(0.1, 0, 0.1, 0)
+            statusLabel.BackgroundTransparency = 1
+            statusLabel.Text = "✓ Cuffing: " .. s.Name
+            statusLabel.TextColor3 = Color3.fromRGB(150, 255, 150)
+            statusLabel.TextScaled = true
+            statusLabel.Font = Enum.Font.SciFi
+            statusLabel.Parent = frame
+            statusLabel.ZIndex = 5
+            
+            while notpranking == false do
+                if game.Players:FindFirstChild(s.Name) then 
+                    if s.Character:FindFirstChild("UpperTorso") and plr.Character:FindFirstChild("HumanoidRootPart") then
+                        pos = Vector3.new(character.HumanoidRootPart.Position.X, 0, character.HumanoidRootPart.Position.Z)
+                        task.wait()
+                        if s.Character then
+                        if s.Character.Humanoid.Health ~= 0 then
+                        if s.Character:FindFirstChild("UpperTorso") then
+                        currentSpeed = (pos-Vector3.new(character:WaitForChild("HumanoidRootPart").Position.X, 0, character.HumanoidRootPart.Position.Z)).magnitude
+                        plr.Character.HumanoidRootPart.CFrame = s.Character:FindFirstChild("UpperTorso").CFrame
+                        local dotof = s.Character.Humanoid.MoveDirection:Dot(s.Character.HumanoidRootPart.CFrame.LookVector)
+                        plr.Character.HumanoidRootPart.CFrame += plr.Character.HumanoidRootPart.CFrame.LookVector * (2.5 + currentSpeed*4*dotof)
+                            plr.Character.HumanoidRootPart.CFrame *= CFrame.Angles(math.rad(15), 0, 0)
+                        end
+                        else
+                            notpranking = true
+                            prankbutton.Text = "⚡ CUFF ⚡"
+                            if statusLabel then statusLabel:Destroy() end
+                            TweenService:Create(
+                                prankbutton,
+                                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                                {BackgroundColor3 = Color3.fromRGB(40, 120, 40)}
+                            ):Play()
+                            end
+                        if plr.Character:WaitForChild("Humanoid").Sit == true then
+                            plr.Character.Humanoid.Sit = false
+                        end
+                        else
+                        task.wait(.01)
+                        
+                    end
+                    else
+                    task.wait(.01)
+                    prankbutton.Text = "⚡ CUFF ⚡"
+                    if statusLabel then statusLabel:Destroy() end
+                    notpranking = true
+                    TweenService:Create(
+                        prankbutton,
+                        TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(40, 120, 40)}
+                    ):Play()
+                    end
+                else
+                    task.wait(.01)
+                    prankbutton.Text = "⚡ CUFF ⚡"
+                    if statusLabel then statusLabel:Destroy() end
+                    notpranking = true
+                    TweenService:Create(
+                        prankbutton,
+                        TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(40, 120, 40)}
+                    ):Play()
+                end
+            end
+            if check(plr.Character.Humanoid) ~= nil then
+                check(plr.Character.Humanoid):Stop()
+            end
+            if statusLabel then statusLabel:Destroy() end
+        else
+            if debounce then
+                debounce = false
+                
+                -- Error animation effect
+                local errorAnim = TweenService:Create(
+                    username,
+                    TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 3, true),
+                    {Position = username.Position + UDim2.new(0.01, 0, 0, 0)}
+                )
+                errorAnim:Play()
+                
+                username.Text = "⚠ Invalid Username ⚠"
+                username.PlaceholderText = "⚠ Invalid Username ⚠"
+                username.TextColor3 = Color3.fromRGB(255, 200, 150) -- Orange-ish for error
+                
+                wait(2)
+                
+                username.Text = ""
+                username.PlaceholderText = "✎ Enter Username..."
+                username.TextColor3 = Color3.fromRGB(180, 255, 180) -- Back to green
+                debounce = true
+            end
+        end
+    else
+        prankbutton.Text = "⚡ CUFF ⚡"
+        notpranking = true
+        TweenService:Create(
+            prankbutton,
+            TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundColor3 = Color3.fromRGB(40, 120, 40)}
+        ):Play()
+    end
+end)
+
+-- Enhanced hide button functionality with animations
+local guiVisible = true
+hidebutton.MouseButton1Down:Connect(function()
+    -- Create click effect
+    local clickEffect = Instance.new("Frame")
+    clickEffect.Size = UDim2.new(0, 0, 0, 0)
+    clickEffect.Position = UDim2.new(0.5, 0, 0.5, 0)
+    clickEffect.AnchorPoint = Vector2.new(0.5, 0.5)
+    clickEffect.BackgroundColor3 = Color3.fromRGB(150, 255, 150)
+    clickEffect.BackgroundTransparency = 0
+    clickEffect.ZIndex = 5
+    clickEffect.Parent = hidebutton
+    
+    local clickCorner = Instance.new("UICorner")
+    clickCorner.CornerRadius = UDim.new(1, 0) -- Perfect circle
+    clickCorner.Parent = clickEffect
+    
+    -- Animate the click ripple
+    TweenService:Create(
+        clickEffect,
+        TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {Size = UDim2.new(2, 0, 2, 0), BackgroundTransparency = 1}
+    ):Play()
+    
+    spawn(function()
+        wait(0.5)
+        clickEffect:Destroy()
+    end)
+    
+    guiVisible = not guiVisible
+    if guiVisible then
+        -- Fade in animation
+        frame.Visible = true
+        frame.BackgroundTransparency = 1
+        
+        TweenService:Create(
+            frame,
+            TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundTransparency = 0}
+        ):Play()
+        
+        hidebutton.Text = "Hide"
+    else
+        -- Fade out animation
+        TweenService:Create(
+            frame,
+            TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundTransparency = 1}
+        ):Play()
+        
+        spawn(function()
+            wait(0.5)
+            frame.Visible = false
+        end)
+        
+        -- Create a fancy show button with more style
+        local showButton = Instance.new("TextButton")
+        showButton.Size = UDim2.new(0.08, 0, 0.05, 0)
+        showButton.Position = UDim2.new(0.02, 0, 0.95, 0) -- Bottom left as requested
+        showButton.BackgroundColor3 = Color3.fromRGB(40, 180, 40)
+        showButton.TextColor3 = Color3.fromRGB(220, 255, 220)
+        showButton.Text = "✧ SHOW ✧"
+        showButton.TextScaled = true
+        showButton.Font = Enum.Font.SciFi -- Fancy font
+        showButton.Parent = main
+        showButton.ZIndex = 10
+        showButton.BackgroundTransparency = 1 -- Start transparent for fade in
+        
+        -- Add UICorner to the show button
+        local showButtonCorner = Instance.new("UICorner")
+        showButtonCorner.CornerRadius = UDim.new(0.3, 0)
+        showButtonCorner.Parent = showButton
+        
+        -- Add gradient to the show button
+        local showButtonGradient = Instance.new("UIGradient")
+        showButtonGradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 220, 60)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(120, 255, 120))
+        })
+        showButtonGradient.Parent = showButton
+        
+        -- Add glow to the show button
+        local showButtonStroke = Instance.new("UIStroke")
+        showButtonStroke.Thickness = 2
+        showButtonStroke.Color = Color3.fromRGB(150, 255, 150)
+        showButtonStroke.Transparency = 0.2
+        showButtonStroke.Parent = showButton
+        
+        -- Add glowing particles around the button
+        for i = 1, 5 do
+            local particle = Instance.new("Frame")
+            particle.Size = UDim2.new(0, 4, 0, 4)
+            particle.BackgroundColor3 = Color3.fromRGB(150, 255, 150)
+            particle.BackgroundTransparency = 0.5
+            particle.Position = UDim2.new(math.random(), 0, math.random(), 0)
+            particle.ZIndex = 9
+            particle.Parent = showButton
+            
+            -- Animate particles
+            spawn(function()
+                while particle.Parent ~= nil do
+                    local randomMove = TweenService:Create(
+                        particle,
+                        TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+                        {Position = UDim2.new(math.random(), 0, math.random(), 0), BackgroundTransparency = math.random(0.3, 0.8)}
+                    )
+                    randomMove:Play()
+                    wait(2)
+                end
+            end)
+        end
+        
+        -- Fade in animation for show button
+        TweenService:Create(
+            showButton,
+            TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundTransparency = 0}
+        ):Play()
+        
+        -- Floating animation for show button
+        spawn(function()
+            while showButton.Parent ~= nil do
+                local floatUp = TweenService:Create(
+                    showButton,
+                    TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+                    {Position = UDim2.new(0.02, 0, 0.94, 0)}
+                )
+                floatUp:Play()
+                wait(1.5)
+                
+                local floatDown = TweenService:Create(
+                    showButton,
+                    TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+                    {Position = UDim2.new(0.02, 0, 0.95, 0)}
+                )
+                floatDown:Play()
+                wait(1.5)
+            end
+        end)
+        
+        -- Make it visible again when clicked with animation
+        showButton.MouseButton1Down:Connect(function()
+            -- Create click effect
+            local clickEffect = Instance.new("Frame")
+            clickEffect.Size = UDim2.new(0, 0, 0, 0)
+            clickEffect.Position = UDim2.new(0.5, 0, 0.5, 0)
+            clickEffect.AnchorPoint = Vector2.new(0.5, 0.5)
+            clickEffect.BackgroundColor3 = Color3.fromRGB(150, 255, 150)
+            clickEffect.BackgroundTransparency = 0
+            clickEffect.ZIndex = 11
+            clickEffect.Parent = showButton
+            
+            local clickCorner = Instance.new("UICorner")
+            clickCorner.CornerRadius = UDim.new(1, 0) -- Perfect circle
+            clickCorner.Parent = clickEffect
+            
+            -- Animate the click ripple
+            TweenService:Create(
+                clickEffect,
+                TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {Size = UDim2.new(2, 0, 2, 0), BackgroundTransparency = 1}
+            ):Play()
+            
+            -- Fade out show button
+            TweenService:Create(
+                showButton,
+                TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {BackgroundTransparency = 1}
+            ):Play()
+            
+            -- Show main frame
+            frame.Visible = true
+            frame.BackgroundTransparency = 1
+            
+            TweenService:Create(
+                frame,
+                TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {BackgroundTransparency = 0}
+            ):Play()
+            
+            guiVisible = true
+            hidebutton.Text = "Hide"
+            
+            spawn(function()
+                wait(0.5)
+                showButton:Destroy()
+            end)
+        end)
+        
+        -- Hover effect for show button
+        showButton.MouseEnter:Connect(function()
+            TweenService:Create(
+                showButton,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {BackgroundColor3 = Color3.fromRGB(100, 255, 100), Size = UDim2.new(0.09, 0, 0.055, 0)}
+            ):Play()
+            
+            TweenService:Create(
+                showButtonStroke,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {Thickness = 3}
+            ):Play()
+        end)
+        
+        showButton.MouseLeave:Connect(function()
+            TweenService:Create(
+                showButton,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {BackgroundColor3 = Color3.fromRGB(40, 180, 40), Size = UDim2.new(0.08, 0, 0.05, 0)}
+            ):Play()
+            
+            TweenService:Create(
+                showButtonStroke,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {Thickness = 2}
+            ):Play()
+        end)
+    end
+end)
+
+-- Character respawn handling with enhanced animations
+plr.CharacterAdded:Connect(function()
+    if not notpranking then
+        PlayAnimation = plr.Character:WaitForChild("Humanoid"):LoadAnimation(anim)
+        repeat 
+            PlayAnimation:Play() 
+            
+            -- Visual effect to show reconnection
+            local reconnectLabel = Instance.new("TextLabel")
+            reconnectLabel.Size = UDim2.new(0.8, 0, 0.1, 0)
+            reconnectLabel.Position = UDim2.new(0.1, 0, 0.1, 0)
+            reconnectLabel.BackgroundTransparency = 1
+            reconnectLabel.Text = "↻ Reconnecting..."
+            reconnectLabel.TextColor3 = Color3.fromRGB(150, 255, 150)
+            reconnectLabel.TextScaled = true
+            reconnectLabel.Font = Enum.Font.SciFi
+            reconnectLabel.Parent = frame
+            reconnectLabel.ZIndex = 5
+            
+            wait(1)
+            
+            if reconnectLabel then
+                reconnectLabel:Destroy()
+            end
+        until check(plr.Character.Humanoid) ~= nil
+    end
+end)
