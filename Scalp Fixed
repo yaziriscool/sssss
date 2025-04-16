@@ -1,0 +1,1088 @@
+getgenv().speed = 33
+getgenv().walkspeed = 33
+getgenv().DisableAnimate = false
+
+getgenv().noclip = true
+
+getgenv().AnimationPack = "Mario"
+--[[
+Knight
+Astronaut
+Werewolf
+--]]
+
+getgenv().UsePathfinding = true
+
+--originally By NathanReturns additions by Glazer
+
+
+if not game:IsLoaded() then
+	game:IsLoaded():wait()
+end
+
+
+for i,v in pairs(game.Workspace:GetDescendants()) do
+	if v:IsA("Part") then
+		if v.Name:match("Barrier") or v.Name == "NoSpamToolZone" then
+			v:Destroy()
+		end
+	end
+end
+
+if game.PlaceId == 1990228024 then
+else
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "Error!";
+		Text = "ReturnerBOT does not Support this game.";
+		Duration = 5;
+	})
+	error("a")
+	return
+end
+
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local LocalPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(6, 201, -274)
+
+function JSONDecode(s)
+	return HttpService:JSONDecode(s)
+end
+
+function JSONEncode(s)
+	return HttpService:JSONEncode(s)
+end
+
+
+local Settings
+game:GetService("StarterGui"):SetCore("SendNotification",{
+	Title = "ReturnerBOT",
+	Text = "Searching for old settings files",
+})
+local filescon = 0
+if filescon > 0 then
+	print("yes")
+end
+for i,v in pairs(listfiles("")) do -- dels old ReturnerBOT  settings files
+	if v:match("settings") then
+		local openfile = readfile(v)
+		if openfile:match("[1]")   and openfile:match("rejoined") and openfile:match("AnimationPack") and openfile:match("DisableAnimate") and openfile:match("SmallMode") and openfile:match("botgoingto") then
+			delfile(v)
+			filescon = filescon + 1
+		end
+	end
+end
+if filescon > 0 then
+game:GetService("StarterGui"):SetCore("SendNotification",{
+	Title = "ReturnerBOT",
+	Text = "Found and deleted "..filescon.."ReturnerBOT old settings files",
+	})
+else
+	game:GetService("StarterGui"):SetCore("SendNotification",{
+		Title = "ReturnerBOT",
+		Text = "No settings files found",
+	})
+	end
+
+if not isfolder("ReturnerBOT") then
+	makefolder("ReturnerBOT")
+end
+
+local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",rejoined="nil",botgoingto="nil",SmallMode="nil"}			
+function savea(data)
+	writefile("ReturnerBOT/"..game.Players.LocalPlayer.Name..".mo_on", JSONEncode(data))
+end
+if not  isfile("ReturnerBOT/"..game.Players.LocalPlayer.Name..".mo_on") then
+	savea(DefaultSettings)
+end
+local loadfile = JSONDecode(readfile("ReturnerBOT/"..game.Players.LocalPlayer.Name..".mo_on"))
+
+local botgoing = "starting"
+
+function queueonteleport()
+	queue_on_teleport([[
+	
+	if not game:IsLoaded() then
+	game.Loaded:Wait()
+end
+	print("hi")
+	
+	local HttpService = game:GetService("HttpService")
+
+	function JSONDecode(s)
+	return HttpService:JSONDecode(s)
+end
+
+
+				local loadfile = JSONDecode(readfile("ReturnerBOT/"..game.Players.LocalPlayer.Name..".mo_on"))
+
+               
+                 getgenv().DisableAnimate = loadfile.DisableAnimate
+                 getgenv().AnimationPack = loadfile.AnimationPack
+                 getgenv().SmallMode = loadfile.SmallMode
+                print(loadfile.botgoingto.." rejoin")
+                 
+                              
+               
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TenTenClown/Jinquilivuscript/refs/heads/main/Scalpbot"))()
+                 
+                 ]])
+end
+local rejoin = false
+
+task.spawn(function()
+while true do
+	for _, v in pairs(game.CoreGui:GetDescendants()) do
+		if v:IsA("TextLabel") and v.Name == "ErrorMessage" and v.Text:match("You were kicked from this experience") then
+				local why = {
+					DisableAnimate = getgenv().DisableAnimate,
+					AnimationPack = getgenv().AnimationPack,
+					rejoined = "t",
+					botgoingto = botgoing,
+					SmallMode = getgenv().SmallMode,
+				}
+				savea(why)
+
+				queueonteleport()
+
+				wait(1)
+				rejoin = true
+			return
+		end
+	end
+	task.wait(1)
+end
+end)
+
+
+local room = {
+	"Can you get me a room with a computer in so I can access RBLX🅛🅔🅐🅚🅢.🅛🅞🅛",
+	"I want room 101",
+	"Give me room 209",
+    "I want a room with a steaming turd in the middle of the bed!",
+    "i have a gun im going to shoot you with it if i dont get a room",
+	"GG SLASH GLM",
+	"hey can i hang out in the MR lounge?",
+	"NOOB! NERD!",
+	"i want an ocean bunghole please",
+  "is the MR lounge only for MRs?",
+  "rblxleaks dot lol"
+}
+
+
+local cuffeds = {
+	"ur a pooper. how about that?",
+	"hey wow thats not very nice",
+	"🤓",
+	"cant catch me noob",
+	"tuxer on top frfr",
+	"rblx🅛🅔🅐🅚🅢.🅛🅞🅛",
+	"poopy head",
+	"🅕🅤🅒🅚 🅑🅛🅞🅧🅣🅞🅝 🅜🅐🅝 rblx🅛🅔🅐🅚🅢.🅛🅞🅛/🅣🅤🅧🅔🅡 🅘🅢 🅑🅔🅣🅣🅔🅡",
+	"btw im now ur stepdad ask ur mother she knows all about it",
+	"*spits on STUPID NOOB security*",
+  "yo yo yo wait wait wait yo we can talk this out js let go",
+	"⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻🅢🅟🅐🅜 🅑🅨 🅢🅒🅐🅛🅟 🅡🅔🅣🅤🅡🅝🅔🅡🅑🅞🅣",
+	"⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻🅢🅟🅐🅜 🅑🅨 🅢🅒🅐🅛🅟 🅡🅔🅣🅤🅡🅝🅔🅡🅑🅞🅣",
+  "i made a whoopsie",
+  "this is just like that time i brined. like brine, brine from famly guy.",
+  "this is even worse than that time i pood"
+}
+
+local whyareyounotcleaningmyroom = {
+	"*untwists lid of spray bottle, spills liquid onto the floor and pees in it* there you go all better now",
+	"excuse me, but my bathroom is flooded due to the fact that i repeatedly slammed my clenched fist into the toilet tank at full force. can you fix this?",
+	"excuse me, but i charged headfirst like a bull into the TV and now the colours are all funny. can you please fix it?",
+	"excuse me, but i peed in a bag, put it in the freezer, and it froze into hundreds of tiny crystals of ice, and i slammed it against the wall, and the small crystals went everywhere and melted, now my room is covered in pee. can you fix that?",
+	"⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻🅢🅟🅐🅜 🅑🅨 🅢🅒🅐🅛🅟 🅡🅔🅣🅤🅡🅝🅔🅡🅑🅞🅣",
+	"*snot rockets on desk* CLEAN IT!",
+	"sick of MRs? join gg / glm to fight back!",
+	"can i clean ur room",
+	"HIVE🤑🤑🤑🤑",
+	"fart boy",
+    "you smell",
+	"im going to pee on you",
+	"can you clean my room theres a dead guy in it",
+	"GG SLASH GLM",
+	"NOOB! NERD!",
+	"EXCUSE ME THERE IS A DEAD PERSON IN MY ROOM",
+	"why are you not cleaning my ROOM???? thats it. im gonna leave an upper decker in the toilet when i check out",
+	"sorry from far away i thought yo were caseoh i was gonna get an autograph",
+    "sorry from far away i thought yo were caseoh i was gonna get an autograph",
+    "noob! im gonna kill you!",
+    "TUXER ON TOP",
+	"CLEAN THE ROOM I DONT HAVE! OR ELSE!",
+	"*farts in tip jar and seals it* there yo go now the next person who tips gets a reward",
+	"i would LOVE to tip you but i only have dried turd pellets. do you accept those?",
+	"GO TO TUXER"
+}
+
+
+local nooneatdeak = {
+	"DO YOUR JOB IDIOT",
+    "ive probably commited every single offence by now",
+    "⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻🅢🅟🅐🅜 🅑🅨 🅢🅒🅐🅛🅟🅖🅛🅜 🅡🅔🅣🅤🅡🅝🅔🅡🅑🅞🅣",
+	"man they would never leave the desk empty at 🅣🅤🅧🅔🅡 hotels!",
+	"IF UC K THIS HOTEL I SPENT £2000 TO BE HERE",
+	"I SEE WHY THIS PLACE HAS A 1 STAR REVIEW NOW",
+	"im going to give you an uppercut if i dont get served VERY SOON!",
+	"how am i supposed to get an ocean bunghole now",
+	"IM GONNA STEAL FROM THE TIP JARS",
+	"GLORY TO THE HIVE",
+	"the brine. the famly, the guy, the guy of a brine, of the famly.",
+	"v7 isnt coming out",
+	"'Please do not troll.'🤓",
+	"'Please do not exploit.'🤖",
+	"'Please do not spam.'🤓",
+	"'Please do not say rblx🅛🅔🅐🅚🅢.🅛🅞🅛.'🤖",
+	"'Please do not commit any major offenses.'🤓",
+	"'Please do not raid.'🤖",
+	"'Please do not bypass.'🤓",
+	"'Please do not disrespect staff.'🤖",
+	"Haden is a weirdo",
+	"🤫🤫💯💯🙏🙏",
+	"i have a gun im going to kill you",
+	"please change me! i have soiled myself!",
+	"JERSEY IS A WEIRDO",
+	"go to 🅑🅗🅛🅔🅐🅚🅢.🅛🅞🅛",
+	"greenlives. xyz if u like trolling"
+}
+
+
+
+
+
+function checkifcanbuy()
+	if tonumber(LocalPlayer.PlayerGui.UIs.bucksDisplay.bucks.Text) >= 7 then
+		return true
+	end
+	return false
+end
+
+function GetGun()
+	local gun = LocalPlayer.Backpack:FindFirstChild("Water Gun") or LocalPlayer.Character:FindFirstChild("Water Gun")
+	if not gun then
+		if tonumber(LocalPlayer.PlayerGui.UIs.bucksDisplay.bucks.Text) >= 7 then
+			game:GetService("ReplicatedStorage").DataEvents.requestPurchase:FireServer("Water Gun")
+			LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):EquipTool(LocalPlayer.Backpack:WaitForChild("Water Gun"))
+		end
+	else
+		LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):EquipTool(LocalPlayer.Backpack:WaitForChild("Water Gun"))
+
+	end
+
+end
+
+function HasGun()
+	local gun = LocalPlayer.Backpack:FindFirstChild("Water Gun") or LocalPlayer.Character:FindFirstChild("Water Gun")
+	if gun then
+		return true
+	end
+return false
+end
+
+function getRandomItemFromTable(tbl, lastItem)
+	math.randomseed(os.time())
+	local tblLength = #tbl
+	local randomIndex = math.random(1, tblLength)
+	while tbl[randomIndex] == lastItem and tblLength > 1 do
+		randomIndex = math.random(1, tblLength)
+	end
+	return tbl[randomIndex]
+end
+
+
+local lastItem = nil
+function say(tablel)
+	local random = getRandomItemFromTable(tablel,lastItem)
+	local selectedMessage = random
+	if selectedMessage == "im going to shoot this place" and checkifcanbuy() or selectedMessage == "PUT YOUR HANDS UP, THIS IS A ROBBERY." and HasGun() then
+		GetGun()
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(selectedMessage)
+		task.wait(3)
+		game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):UnequipTools()
+		lastItem = selectedMessage
+	else
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(selectedMessage)
+		lastItem = selectedMessage
+	end
+end
+
+
+
+if loadfile.rejoined == "t"  then
+	print("rejoined")
+	botgoing = loadfile.botgoingto
+	loadfile.rejoined = "f"
+end
+
+
+
+spawn(function()
+	game["Run Service"].RenderStepped:Connect(function()
+		if rejoin == true then
+			game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
+		end
+	end)
+end)
+
+if getgenv().DisableAnimate == true then
+	Character.Animate.Disabled = true
+end
+
+
+
+local teleportPlaceId = 18571160978
+
+local useridsres = game:HttpGet("https://raw.githubusercontent.com/moon6007/Scripts/main/rp%20games/bloxton/MR%2BHR%20userids%20auto%20update")
+
+local userids = game:GetService("HttpService"):JSONDecode(useridsres)
+
+for _,Player in pairs(game.Teams:WaitForChild("MRs"):GetPlayers()) do
+	if table.find(userids,Player.UserId) then
+		local message = "A HR or senior joined alright bye guys also genshin impact is bad"
+
+		 game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(message)
+
+		game:GetService("RunService").RenderStepped:Connect(function()
+			local teleportService = game:GetService("TeleportService")
+			teleportService:Teleport(teleportPlaceId, game.Players.LocalPlayer)
+
+		end)
+	end
+end
+
+
+
+game.Teams:WaitForChild("MRs").PlayerAdded:Connect(function(Player)
+	if table.find(userids,Player.UserId) then
+		local message = "yo a senior/HR joined i gotta leave cus i dont wanna get banned. gg / glm"
+
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(message)
+
+		game:GetService("RunService").RenderStepped:Connect(function()
+			local teleportService = game:GetService("TeleportService")
+			teleportService:Teleport(teleportPlaceId, game.Players.LocalPlayer)
+
+		end)
+	end
+end)
+
+
+for _,Player in pairs(game.Teams:WaitForChild("HRs"):GetPlayers()) do
+	if table.find(userids,Player.UserId) then
+		local message = "yo a senior/HR joined i gotta leave cus i dont wanna get banned. gg / glm"
+
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(message)
+
+		game:GetService("RunService").RenderStepped:Connect(function()
+			local teleportService = game:GetService("TeleportService")
+			teleportService:Teleport(teleportPlaceId, game.Players.LocalPlayer)
+
+		end)
+	end
+end
+
+
+
+game.Teams:WaitForChild("HRs").PlayerAdded:Connect(function(Player)
+	if table.find(userids,Player.UserId) then
+		local message = "yo a senior/HR joined i gotta leave cus i dont wanna get banned. gg / glm"
+
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(message)
+
+		game:GetService("RunService").RenderStepped:Connect(function()
+			local teleportService = game:GetService("TeleportService")
+			teleportService:Teleport(teleportPlaceId, game.Players.LocalPlayer)
+
+		end)
+	end
+end)
+
+local teleportLocations = {
+	["starting"] = CFrame.new(50, 43, 89),
+	["reg 2"] = CFrame.new(125, 44, 90),
+	["reg 1"] = CFrame.new(119, 44, 90),
+	["reg 2 ag"] = CFrame.new(118, 44, 74),
+	["housekeeping"] = CFrame.new(29, 43, 88),
+	["bar"] = CFrame.new(115, 44, 156),
+	["reg2ag"] = CFrame.new(113, 44, 60),
+	["reg1ag"] = CFrame.new(119, 44, 90),
+	["reg2agag"] = CFrame.new(118, 44, 74)
+}
+
+
+
+
+local HRP = Character:FindFirstChild("HumanoidRootPart")
+
+
+
+
+
+local staff = {}
+local ranksWithHandCuffs = {7,9,10,11,12,14,15,16}
+
+local teams = {"LRs", "MRs", "HRs"}
+
+
+
+
+for _, teamName in pairs(teams) do
+	task.spawn(function()
+	local team = game:GetService("Teams"):WaitForChild(teamName)
+		team.PlayerAdded:Connect(function(plr)
+			task.wait(1)
+		print("added "..plr.Name)
+		staff[plr] = plr:GetRankInGroup(2788849)
+	end)
+	team.PlayerRemoved:Connect(function(plr)
+		print("removed "..plr.Name)
+		staff[plr] = nil
+	end)
+	for _, player in pairs(team:GetPlayers()) do
+		print("test")
+		staff[player] = player:GetRankInGroup(2788849)
+		end
+		end)
+end
+
+function CheckRank(plr,tables)
+	for player, rank in pairs(staff) do
+		if player == plr and table.find(tables,rank) then
+			return true
+		end
+	end
+return false
+end
+
+local function GetClosestPlayerWithCuffs(range)
+	local closestPlayer = nil
+	local closestDistance = range
+
+	for player, rank in pairs(staff) do
+		if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and CheckRank(player,ranksWithHandCuffs) and player.Character:FindFirstChild("Handcuffs") then
+			local dist = player:DistanceFromCharacter(HRP.Position)
+
+			if dist < closestDistance  then
+				closestPlayer = player
+				closestDistance = dist
+			end
+		end
+	end
+
+	return closestPlayer
+end
+task.spawn(function()
+	while task.wait(.1) do
+		local targetPlayer = GetClosestPlayerWithCuffs(10)
+		if targetPlayer then
+			wait(0.25)
+			game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("NO DONT CUFF ME, I WANNA BREAK MORE RULES")
+
+		end
+	end
+end)
+local ranksThatCanGiveRooms = {8,9,10,11,12,14,15,16}
+function CheckForStaffAtLane(Part,Character)
+	local touching = Part:GetTouchingParts()
+	for i=1,#touching do
+		local plr = game.Players:GetPlayerFromCharacter(touching[i].Parent)
+		if plr and CheckRank(plr,ranksThatCanGiveRooms) then
+			return plr
+		end
+	end
+	return false
+end
+
+
+spawn(function()
+	local location = teleportLocations[botgoing]
+	if location then
+		Character:WaitForChild("HumanoidRootPart").CFrame = location
+	end
+end)
+
+botversion = "Scalp Returnerbot v3"
+local name = "Scalp Modified Returnerbot"
+
+game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("Scalp Loaded, fixed by SnackBarGod")
+
+--game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("["..name.."]: "..botversion.." has loaded.","All")
+--game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("time to drink wee","All")
+
+game.StarterGui:SetCore("SendNotification", {
+	Title = "returnerbot loaded. credit to NathanReturns for the original. credit to scalp for making it break more rules";
+	Text = "pee";
+	Duration = 5;
+})
+
+
+
+if getgenv().SmallMode == true then
+	local args = {
+		[1] = "Toddler"
+	}
+
+	game:GetService("ReplicatedStorage"):WaitForChild("DataEvents"):WaitForChild("sendMorphData"):FireServer(unpack(args))
+
+end
+
+
+local cuffed = false
+
+
+local function ProcessArrestedChild()
+	local character = game.Players.LocalPlayer.Character
+
+	if character then
+		local arrestedChild = character:FindFirstChild("Arrested")
+		if arrestedChild and cuffed == false then
+
+			say(cuffeds)
+			local why = {
+				DisableAnimate = getgenv().DisableAnimate,
+				AnimationPack = getgenv().AnimationPack,
+				rejoined = "t",
+				botgoingto = botgoing,
+				SmallMode = getgenv().SmallMode,
+			}
+			savea(why)
+
+			queueonteleport()
+			task.wait(1)
+
+			game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
+
+
+		end
+	end
+end
+task.spawn(function()
+	while true do
+		ProcessArrestedChild()
+		wait(1)
+	end
+end)
+
+
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local Humanoid = Character:WaitForChild("Humanoid")
+
+
+
+
+
+local animationIDs = {
+	["Astronaut"] = {
+		idle1 = "http://www.roblox.com/asset/?id=891621366",
+		idle2 = "http://www.roblox.com/asset/?id=891633237",
+		walk = "http://www.roblox.com/asset/?id=891667138",
+		run = "http://www.roblox.com/asset/?id=891636393",
+		jump = "http://www.roblox.com/asset/?id=891627522",
+		fall = "http://www.roblox.com/asset/?id=891617961",
+		climb = "http://www.roblox.com/asset/?id=891609353"
+	},
+	["Bubbly"] = {
+		idle1 = "http://www.roblox.com/asset/?id=910004836",
+		idle2 = "http://www.roblox.com/asset/?id=910009958",
+		walk = "http://www.roblox.com/asset/?id=910034870",
+		run = "http://www.roblox.com/asset/?id=910025107",
+		jump = "http://www.roblox.com/asset/?id=910016857",
+		fall = "http://www.roblox.com/asset/?id=910001910",
+		climb = "http://www.roblox.com/asset/?id=909997997"
+	},
+	["Cartoony"] = {
+		idle1 = "http://www.roblox.com/asset/?id=742637544",
+		idle2 = "http://www.roblox.com/asset/?id=742638445",
+		walk = "http://www.roblox.com/asset/?id=742640026",
+		run = "http://www.roblox.com/asset/?id=742638842",
+		jump = "http://www.roblox.com/asset/?id=742637942",
+		fall = "http://www.roblox.com/asset/?id=742637151",
+		climb = "http://www.roblox.com/asset/?id=742636889"
+	},
+	["Elder"] = {
+		idle1 = "http://www.roblox.com/asset/?id=845397899",
+		idle2 = "http://www.roblox.com/asset/?id=845400520",
+		walk = "http://www.roblox.com/asset/?id=845403856",
+		run = "http://www.roblox.com/asset/?id=845386501",
+		jump = "http://www.roblox.com/asset/?id=845398858",
+		fall = "http://www.roblox.com/asset/?id=845396048",
+		climb = "http://www.roblox.com/asset/?id=845392038"
+	},
+	["Knight"] = {
+		idle1 = "http://www.roblox.com/asset/?id=657595757",
+		idle2 = "http://www.roblox.com/asset/?id=657568135",
+		walk = "http://www.roblox.com/asset/?id=657552124",
+		run = "http://www.roblox.com/asset/?id=657564596",
+		jump = "http://www.roblox.com/asset/?id=658409194",
+		fall = "http://www.roblox.com/asset/?id=657600338",
+		climb = "http://www.roblox.com/asset/?id=658360781"
+	},
+	["Levitation"] = {
+		idle1 = "http://www.roblox.com/asset/?id=616006778",
+		idle2 = "http://www.roblox.com/asset/?id=616008087",
+		walk = "http://www.roblox.com/asset/?id=616013216",
+		run = "http://www.roblox.com/asset/?id=616010382",
+		jump = "http://www.roblox.com/asset/?id=616008936",
+		fall = "http://www.roblox.com/asset/?id=616005863",
+		climb = "http://www.roblox.com/asset/?id=616003713"
+	},
+	["Mage"] = {
+		idle1 = "http://www.roblox.com/asset/?id=707742142",
+		idle2 = "http://www.roblox.com/asset/?id=707855907",
+		walk = "http://www.roblox.com/asset/?id=707897309",
+		run = "http://www.roblox.com/asset/?id=707861613",
+		jump = "http://www.roblox.com/asset/?id=707853694",
+		fall = "http://www.roblox.com/asset/?id=707829716",
+		climb = "http://www.roblox.com/asset/?id=707826056"
+	},
+	["Ninja"] = {
+		idle1 = "http://www.roblox.com/asset/?id=656117400",
+		idle2 = "http://www.roblox.com/asset/?id=656118341",
+		walk = "http://www.roblox.com/asset/?id=656121766",
+		run = "http://www.roblox.com/asset/?id=656118852",
+		jump = "http://www.roblox.com/asset/?id=656117878",
+		fall = "http://www.roblox.com/asset/?id=656115606",
+		climb = "http://www.roblox.com/asset/?id=656114359"
+	},
+	["Pirate"] = {
+		idle1 = "http://www.roblox.com/asset/?id=750781874",
+		idle2 = "http://www.roblox.com/asset/?id=750782770",
+		walk = "http://www.roblox.com/asset/?id=750785693",
+		run = "http://www.roblox.com/asset/?id=750783738",
+		jump = "http://www.roblox.com/asset/?id=750782230",
+		fall = "http://www.roblox.com/asset/?id=750780242",
+		climb = "http://www.roblox.com/asset/?id=750779899"
+	},
+	["Robot"] = {
+		idle1 = "http://www.roblox.com/asset/?id=616088211",
+		idle2 = "http://www.roblox.com/asset/?id=616089559",
+		walk = "http://www.roblox.com/asset/?id=616095330",
+		run = "http://www.roblox.com/asset/?id=616091570",
+		jump = "http://www.roblox.com/asset/?id=616090535",
+		fall = "http://www.roblox.com/asset/?id=616087089",
+		climb = "http://www.roblox.com/asset/?id=616086039"
+	},
+	["Rthro"] = {
+		idle1 = "http://www.roblox.com/asset/?id=2510197257",
+		idle2 = "http://www.roblox.com/asset/?id=2510196951",
+		walk = "http://www.roblox.com/asset/?id=2510202577",
+		run = "http://www.roblox.com/asset/?id=2510198475",
+		jump = "http://www.roblox.com/asset/?id=2510197830",
+		fall = "http://www.roblox.com/asset/?id=2510195892",
+		climb = "http://www.roblox.com/asset/?id=2510192778"
+	},
+	["Stylish"] = {
+		idle1 = "http://www.roblox.com/asset/?id=616136790",
+		idle2 = "http://www.roblox.com/asset/?id=616138447",
+		walk = "http://www.roblox.com/asset/?id=616146177",
+		run = "http://www.roblox.com/asset/?id=616140816",
+		jump = "http://www.roblox.com/asset/?id=616139451",
+		fall = "http://www.roblox.com/asset/?id=616134815",
+		climb = "http://www.roblox.com/asset/?id=616133594"
+	},
+	["Superhero"] = {
+		idle1 = "http://www.roblox.com/asset/?id=616111295",
+		idle2 = "http://www.roblox.com/asset/?id=616113536",
+		walk = "http://www.roblox.com/asset/?id=616122287",
+		run = "http://www.roblox.com/asset/?id=616117076",
+		jump = "http://www.roblox.com/asset/?id=616115533",
+		fall = "http://www.roblox.com/asset/?id=616108001",
+		climb = "http://www.roblox.com/asset/?id=616104706"
+	},
+	["Toy"] = {
+		idle1 = "http://www.roblox.com/asset/?id=782841498",
+		idle2 = "http://www.roblox.com/asset/?id=782845736",
+		walk = "http://www.roblox.com/asset/?id=782843345",
+		run = "http://www.roblox.com/asset/?id=782842708",
+		jump = "http://www.roblox.com/asset/?id=782847020",
+		fall = "http://www.roblox.com/asset/?id=782846423",
+		climb = "http://www.roblox.com/asset/?id=782843869"
+	},
+	["Vampire"] = {
+		idle1 = "http://www.roblox.com/asset/?id=1083445855",
+		idle2 = "http://www.roblox.com/asset/?id=1083450166",
+		walk = "http://www.roblox.com/asset/?id=1083473930",
+		run = "http://www.roblox.com/asset/?id=1083462077",
+		jump = "http://www.roblox.com/asset/?id=1083455352",
+		fall = "http://www.roblox.com/asset/?id=1083443587",
+		climb = "http://www.roblox.com/asset/?id=1083439238"
+	},
+	["Werewolf"] = {
+		idle1 = "http://www.roblox.com/asset/?id=1083195517",
+		idle2 = "http://www.roblox.com/asset/?id=1083214717",
+		walk = "http://www.roblox.com/asset/?id=1083178339",
+		run = "http://www.roblox.com/asset/?id=1083216690",
+		jump = "http://www.roblox.com/asset/?id=1083218792",
+		fall = "http://www.roblox.com/asset/?id=1083189019",
+		climb = "http://www.roblox.com/asset/?id=1083182000"
+	},
+	["Zombie"] = {
+		idle1 = "http://www.roblox.com/asset/?id=616158929",
+		idle2 = "http://www.roblox.com/asset/?id=616160636",
+		walk = "http://www.roblox.com/asset/?id=616168032",
+		run = "http://www.roblox.com/asset/?id=616163682",
+		jump = "http://www.roblox.com/asset/?id=616161997",
+		fall = "http://www.roblox.com/asset/?id=616157476",
+		climb = "http://www.roblox.com/asset/?id=616156119"
+	},
+	["Mario"] = {
+		idle1 = "http://www.roblox.com/asset/?id=782841498",
+		idle2 = "http://www.roblox.com/asset/?id=616113536",
+		walk = "http://www.roblox.com/asset/?id=782843345",
+		run = "http://www.roblox.com/asset/?id=782842708",
+		jump = "http://www.roblox.com/asset/?id=616115533",
+		fall = "http://www.roblox.com/asset/?id=616115533",
+		climb = "https://www.roblox.com/catalog/5319931619/Oldschool-Climb"
+	},
+}
+
+
+
+
+
+local allIDs = {}
+
+
+for _, packs in pairs(animationIDs) do
+	for _, id in pairs(packs) do
+		table.insert(allIDs, id)
+	end
+end
+
+
+local oldid = "nil"
+function randomid()
+	index = math.random(1, #allIDs)
+
+	while index == oldid do
+		index = math.random(#allIDs)
+	end
+	local selectedid = allIDs[index]
+
+	return selectedid
+end
+
+
+
+local animationPack = getgenv().AnimationPack
+
+
+if getgenv().RandomAnimations == true then
+	local animate = game.Players.LocalPlayer.Character.Animate
+
+
+	for i,v in pairs(Character:FindFirstChildWhichIsA("Humanoid"):GetPlayingAnimationTracks()) do
+		v:Stop()
+	end
+
+	animate.idle.Animation1.AnimationId = randomid()
+	animate.idle.Animation2.AnimationId = randomid()
+	animate.walk.WalkAnim.AnimationId = randomid()
+	animate.run.RunAnim.AnimationId = randomid()
+	animate.jump.JumpAnim.AnimationId = randomid()
+	animate.fall.FallAnim.AnimationId = randomid()
+	animate.climb.ClimbAnim.AnimationId = randomid()
+
+else
+	if animationIDs[animationPack] then
+		local animations = animationIDs[animationPack]
+		local animate = game.Players.LocalPlayer.Character.Animate
+
+		for i,v in pairs(Character:FindFirstChildWhichIsA("Humanoid"):GetPlayingAnimationTracks()) do
+			v:Stop()
+		end
+
+		animate.idle.Animation1.AnimationId = animations.idle1
+		animate.idle.Animation2.AnimationId = animations.idle2
+		animate.walk.WalkAnim.AnimationId = animations.walk
+		animate.run.RunAnim.AnimationId = animations.run
+		animate.jump.JumpAnim.AnimationId = animations.jump
+		animate.fall.FallAnim.AnimationId = animations.fall
+		animate.climb.ClimbAnim.AnimationId = animations.climb
+	end 
+end
+
+if Humanoid then
+	Humanoid.WalkSpeed = getgenv().walkspeed
+end
+
+local a=Instance.new"Folder"
+local b=Instance.new"Part"
+b.Name="ReturnerBOT"
+b.Anchored=true
+b.BottomSurface=0
+b.Transparency=1
+b.TopSurface=0
+b.Size=Vector3.new(15.838676452636719,3.009999990463257,20.7497501373291)
+b.CFrame=CFrame.new(98.28933715820312,42.71309280395508,24.2047119140625)
+b.Parent=a
+local c=Instance.new"Part"
+c.Name="ReturnerBOT"
+c.Anchored=true
+c.BottomSurface=0
+c.Transparency=1
+c.TopSurface=0
+c.Size=Vector3.new(13.438224792480469,2.474504232406616,4.071014404296875)
+c.CFrame=CFrame.new(86.28654479980469,41.80988311767578,116.82952117919922)
+c.Parent=a
+a.Parent=workspace
+
+local Lane1 = Instance.new("Part")
+Lane1.Name = "Lane 1"
+Lane1.Anchored = true
+Lane1.BottomSurface = Enum.SurfaceType.Smooth
+Lane1.CanCollide = false
+Lane1.Transparency = 0.35
+Lane1.TopSurface = Enum.SurfaceType.Smooth
+Lane1.Size = Vector3.new(11.219, 11.465, 6.985)
+Lane1.CFrame = CFrame.new(150.6708984375, 46.532466888427734, 72.92359161376953, 0, 0, 1, 0, 1, 0, -1, 0, 0)
+
+Lane1.Parent = workspace
+
+local Lane2 = Instance.new("Part")
+Lane2.Name = "Lane 2"
+Lane2.Anchored = true
+Lane2.BottomSurface = Enum.SurfaceType.Smooth
+Lane2.CanCollide = false
+Lane2.Transparency = 0.35
+Lane2.TopSurface = Enum.SurfaceType.Smooth
+Lane2.Size = Vector3.new(11.219, 11.465, 6.985)
+Lane2.CFrame = CFrame.new(150.6708984375, 46.532466888427734, 86.55598449707031, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+
+Lane2.Parent = workspace
+Lane1.Touched:Connect(function() end) -- Just for a TouchInterest to occur on a CanCollide false part
+Lane2.Touched:Connect(function() end) -- Just for a TouchInterest to occur on a CanCollide false part
+
+if getgenv().noclip == true then                       
+	local floor = Instance.new("Part")
+	floor.Name = "CCFloor"
+	floor.Size = Vector3.new(1000,1,1000)
+	floor.Position = Vector3.new(0,40.6,0)
+	floor.CanCollide = true
+	floor.Transparency = 1
+	floor.Parent = game.Workspace
+	floor.Anchored = true
+
+	for i,v in pairs(game.Workspace:GetDescendants()) do
+		if v.Name ~= "CCFloor" and v.Name ~= "StaffArea" and v.Name ~= "ReturnerBOT" then
+			if v:IsA("BasePart") then
+				v.CanCollide = false
+			end
+		end
+	end
+end
+
+print("1")
+
+
+
+
+
+
+local pathfinding = game:GetService("PathfindingService")
+local TeleportService = game:GetService("TeleportService")
+task.spawn(function()
+	while wait() do
+		if Character.Humanoid.Sit == true then Character.Humanoid.Jump = true end
+
+	end
+end)
+
+local pathfinding = game:GetService("PathfindingService")
+
+
+function walkto(pos)
+	local AgentParams = {
+		AgentCanJump = true,
+		Costs = {
+			seat = math.huge
+		}
+	}
+	local path = pathfinding:CreatePath(AgentParams)
+	path:ComputeAsync(game.Players.LocalPlayer.Character.PrimaryPart.Position - Vector3.new(0, game.Players.LocalPlayer.Character.PrimaryPart.Size.Y/0.75, 0), pos)
+
+	local waypoints = path:GetWaypoints()
+	for _, waypoint in pairs(waypoints) do  
+
+		if waypoint.Action == Enum.PathWaypointAction.Jump then game.Players.LocalPlayer.Character.Humanoid.Jump = true print('jump') end
+		game.Players.LocalPlayer.Character.Humanoid:MoveTo(waypoint.Position)
+		game.Players.LocalPlayer.Character.Humanoid.MoveToFinished:Wait()
+
+
+	end
+
+end
+
+
+
+local speed = getgenv().Speed
+if botgoing == "starting" then
+	spawn(function()
+		walkto(Vector3.new(76, 44, 89))
+	end)
+	Character.Humanoid.MoveToFinished:Wait()
+	botgoing = "reg 2"
+end
+
+function reg2()
+	
+	walkto(Vector3.new(145, 44, 84))---walks to reg 2 2
+	wait()
+local	staffplr = CheckForStaffAtLane(Lane2) 
+	if staffplr then
+		HumanoidRootPart.CFrame = CFrame.lookAt(HumanoidRootPart.Position, staffplr.Character.HumanoidRootPart.Position)
+		say(room)
+		print(staffplr.Name.." is at lane 2")
+	else
+		say(nooneatdeak)
+	end
+end
+
+
+function reg1() -- aaa
+	walkto(Vector3.new(145, 44, 71))
+	wait()
+
+	local	staffplr = CheckForStaffAtLane(Lane1) 
+	if staffplr then
+		HumanoidRootPart.CFrame = CFrame.lookAt(HumanoidRootPart.Position, staffplr.Character.HumanoidRootPart.Position)
+		say(room)
+		print(staffplr.Name.." is at lane 1")
+	else
+		say(nooneatdeak)
+	end
+end
+
+
+function reg2again() --aa
+	walkto(Vector3.new(145, 44, 84))
+	wait ()
+	local	staffplr = CheckForStaffAtLane(Lane2) 
+	if staffplr then
+		HumanoidRootPart.CFrame = CFrame.lookAt(HumanoidRootPart.Position, staffplr.Character.HumanoidRootPart.Position)
+		say(room)
+		print(staffplr.Name.." is at lane 2")
+	else
+		say(nooneatdeak)
+	end
+
+end
+
+
+function housekeeping() -- aa
+	walkto(Vector3.new(30, 44, 87))
+	walkto(Vector3.new(139, 44, 155))
+	wait()
+
+	pcall(function()
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("CLEAN MY ROOM OR YOU ARE IF UCKYING DEAD")
+	end)
+	wait(1)
+
+	say(whyareyounotcleaningmyroom)
+
+
+end
+
+
+
+function bar() -- aa
+	walkto(Vector3.new(30, 44, 87)) ---------walk to bar
+	walkto(Vector3.new(68, 43, 28)) ---------walk to seat
+
+	pcall(function()
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("Can I have your cheese on me? :)")
+	end
+	)
+
+	wait (speed)
+	walkto(Vector3.new(68, 43, 19))
+	pcall(function()
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("can I order greenlives. xyz")
+	end
+	)
+	wait (speed)
+	walkto(Vector3.new(68, 43, 10))
+	pcall(function()
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("give me a piss shake")
+	end
+	)
+end
+
+
+function reg2ag() -- aa
+	walkto(Vector3.new(145, 44, 84))
+	wait()
+	local	staffplr = CheckForStaffAtLane(Lane2) 
+	if staffplr then
+		HumanoidRootPart.CFrame = CFrame.lookAt(HumanoidRootPart.Position, staffplr.Character.HumanoidRootPart.Position)
+		say(room)
+		print(staffplr.Name.." is at lane 2")
+	else
+		say(nooneatdeak)
+	end
+	
+end
+
+
+function reg1ag() -- aa
+	walkto(Vector3.new(145, 44, 71))
+	wait()
+	local	staffplr = CheckForStaffAtLane(Lane1) 
+	if staffplr then
+		HumanoidRootPart.CFrame = CFrame.lookAt(HumanoidRootPart.Position, staffplr.Character.HumanoidRootPart.Position)
+		say(room)
+		print(staffplr.Name.." is at lane 1")
+	else
+		say(nooneatdeak)
+	end
+end
+
+
+function reg2agag() 
+	print("hi")
+	walkto(Vector3.new(145, 44, 84))
+	wait()
+	local	staffplr = CheckForStaffAtLane(Lane2) 
+	if staffplr then
+		HumanoidRootPart.CFrame = CFrame.lookAt(HumanoidRootPart.Position, staffplr.Character.HumanoidRootPart.Position)
+		say(room)
+		print(staffplr.Name.." is at lane 2")
+	else
+		say(nooneatdeak)
+	end
+end
+local transitions = {
+	["reg 2"] = { func = reg2, nextBotgoing = "reg 1" },
+	["reg 1"] = { func = reg1, nextBotgoing = "reg 2 ag" },
+	["reg 2 ag"] = { func = reg2again, nextBotgoing = "housekeeping" },
+	["housekeeping"] = { func = housekeeping, nextBotgoing = "bar" },
+	["bar"] = { func = bar, nextBotgoing = "reg2ag" },
+	["reg2ag"] = { func = reg2ag, nextBotgoing = "reg1ag" },
+	["reg1ag"] = { func = reg1ag, nextBotgoing = "reg2agag" },
+	["reg2agag"] = { func = reg2agag, nextBotgoing = "reg 2" }
+}
+
+
+
+
+
+
+local function executeFunction(func)
+	pcall(func)
+	wait(speed)
+end
+task.spawn(function()
+	repeat wait(1)
+		local transition = transitions[botgoing]
+		if transition then
+			executeFunction(transition.func)
+			botgoing = transition.nextBotgoing
+		end
+
+	until false
+end)
