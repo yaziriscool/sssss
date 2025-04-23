@@ -1,0 +1,34 @@
+
+-- I did not make this script, all I did was import it for exploits
+
+-- All credits goes to this guy: https://devforum.roblox.com/t/basic-legacy-chat-rewrite-for-textchatservice/3260898
+
+
+
+
+local TextChatService = game:GetService("TextChatService")
+
+-- Disable UI elements
+TextChatService.ChatWindowConfiguration.Enabled = false
+TextChatService.ChatInputBarConfiguration.Enabled = false
+TextChatService.ChannelTabsConfiguration.Enabled = false
+TextChatService.BubbleChatConfiguration.Enabled = false
+
+
+game:GetObjects("rbxassetid://122252029612413")[1].Parent=game.Workspace
+
+local rbxmSuite = loadstring(game:HttpGetAsync("https://github.com/richie0866/rbxm-suite/releases/latest/download/rbxm-suite.lua"))()
+
+
+task.wait()
+
+
+local project = rbxmSuite.launch("rbxassetid://78749176287426", {
+    runscripts = true,
+    deferred = true,
+    nocache = false,
+    nocirculardeps = true,
+    debug = false,
+    verbose = false,
+
+})
