@@ -3,7 +3,9 @@
 
 -- All credits goes to this guy: https://devforum.roblox.com/t/basic-legacy-chat-rewrite-for-textchatservice/3260898
 
-
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
 
 
 local TextChatService = game:GetService("TextChatService")
