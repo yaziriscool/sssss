@@ -1,0 +1,308 @@
+--!nolint LocalShadow
+-- // Services
+local Players      = game:GetService("Players")
+local TextService  = game:GetService("TextService")
+local TweenService = game:GetService("TweenService")
+local Debris       = game:GetService("Debris")
+local RunService   = game:GetService("RunService")
+
+-- // Local Player & Camera
+local LocalPlayer = Players.LocalPlayer
+local camera      = workspace.CurrentCamera
+
+-- //////////////////////////////////////////////////////////////////////////
+-- // SETTINGS                                                           //
+-- //////////////////////////////////////////////////////////////////////////
+
+local ChatConstants = {
+    GuiColors = {
+        BubbleBackground = Color3.fromRGB(255, 255, 255),
+        BubbleText       = Color3.fromRGB(50, 50, 50),
+    },
+    BubbleFont     = Enum.Font.SourceSans,
+    BubbleTextSize = 18,
+}
+
+local MAX_BUBBLE_WIDTH         = 400
+local MIN_BUBBLE_LIFETIME      = 12
+local MAX_BUBBLE_LIFETIME      = 25
+local MIN_BUBBLE_LIFETIME_SELF = 12
+local MAX_BUBBLE_LIFETIME_SELF = 20
+local BUBBLE_FADE_TIME         = 1.5
+
+local NEAR_BUBBLE_DISTANCE = 70
+local MAX_BUBBLE_DISTANCE  = 140
+
+local MAX_TOTAL_BUBBLE_HEIGHT = 200  -- maximum vertical stack height in pixels
+local resizeBubbleTweenInfo   = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local shiftBubblesUpTweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+-- //////////////////////////////////////////////////////////////////////////
+-- // UTILITY                                                            //
+-- //////////////////////////////////////////////////////////////////////////
+
+local ChatUtil = {}
+function ChatUtil.convertRichTextEscapeStrings(str: string)
+    return str
+end
+
+local function lerpLength(text: string, minTime: number, maxTime: number)
+    return (minTime + maxTime) / 2
+end
+
+-- queue of bubbles per adornee
+local chatBubbleQueues = {}
+
+local function removeOldestFromQueue(adornee: PVInstance)
+    local queue = chatBubbleQueues[adornee]
+    if not queue or #queue == 0 then
+        return
+    end
+    local oldest = table.remove(queue)  -- removes last element
+    if oldest and oldest.Parent then
+        oldest:Destroy()
+    end
+end
+
+local function addBubbleToQueue(adornee: PVInstance, chatBubble: BillboardGui, lifetime: number)
+    local queue = chatBubbleQueues[adornee]
+    if queue == nil then
+        queue = {}
+        chatBubbleQueues[adornee] = queue
+
+        adornee.Destroying:Connect(function()
+            chatBubbleQueues[adornee] = nil
+        end)
+    end
+
+    local gap = 4
+    local newChatBubbleSizeY = chatBubble.BillboardFrame.ChatBubble.AbsoluteSize.Y
+    local totalYSpaceUsed = newChatBubbleSizeY
+
+    for _, v in ipairs(queue) do
+        if v.Parent == nil then
+            continue
+        end
+
+        -- shift existing bubbles up
+        local shiftUp = newChatBubbleSizeY + gap
+        local newPosition = v.BillboardFrame.Position - UDim2.fromOffset(0, shiftUp)
+        TweenService:Create(v.BillboardFrame, shiftBubblesUpTweenInfo, { Position = newPosition }):Play()
+
+        totalYSpaceUsed = totalYSpaceUsed + v.BillboardFrame.ChatBubble.AbsoluteSize.Y
+
+        -- grey out older text
+        local txt = v.BillboardFrame:FindFirstChild("BubbleText", true)
+        if txt and txt:IsA("TextLabel") then
+            txt.TextTransparency = 0.5
+        end
+    end
+
+    if totalYSpaceUsed > MAX_TOTAL_BUBBLE_HEIGHT then
+        removeOldestFromQueue(adornee)
+    end
+
+    table.insert(queue, 1, chatBubble)
+
+    task.delay(lifetime + BUBBLE_FADE_TIME, function()
+        if chatBubble.Parent then
+            removeOldestFromQueue(adornee)
+        end
+    end)
+end
+
+-- //////////////////////////////////////////////////////////////////////////
+-- // BUBBLE CREATION                                                     //
+-- //////////////////////////////////////////////////////////////////////////
+
+local function createBubble(adornee: PVInstance, message: string, sentBySelf: boolean?)
+    if not adornee or not adornee:IsA("BasePart") then
+        warn("createBubble: Invalid adornee provided.")
+        return
+    end
+
+    -- build GUI
+    local chatBubbleGui = Instance.new("BillboardGui")
+    chatBubbleGui.Name           = "ChatBubbleGui"
+    chatBubbleGui.Size           = UDim2.fromOffset(400, 250)
+    chatBubbleGui.AlwaysOnTop    = true
+    chatBubbleGui.LightInfluence = 0
+    chatBubbleGui.ResetOnSpawn   = false
+
+    local billboardFrame = Instance.new("Frame")
+    billboardFrame.Name               = "BillboardFrame"
+    billboardFrame.AnchorPoint        = Vector2.new(0.5, 0)
+    billboardFrame.BackgroundTransparency = 1
+    billboardFrame.Position           = UDim2.fromScale(0.5, -0.5)
+    billboardFrame.Size               = UDim2.fromScale(1, 1)
+    billboardFrame.Parent             = chatBubbleGui
+
+    local chatBubble = Instance.new("ImageLabel")
+    chatBubble.Name        = "ChatBubble"
+    chatBubble.AnchorPoint = Vector2.new(0.5, 1)
+    chatBubble.BackgroundTransparency = 1
+    chatBubble.BorderSizePixel = 0
+    chatBubble.Image           = "rbxasset://textures/ui/dialog_white.png"
+    chatBubble.ImageColor3     = ChatConstants.GuiColors.BubbleBackground
+    chatBubble.Position        = UDim2.fromScale(0.5, 1)
+    chatBubble.ScaleType       = Enum.ScaleType.Slice
+    chatBubble.SliceCenter     = Rect.new(10, 10, 10, 10)
+    chatBubble.Parent          = billboardFrame
+
+    local smallTalkBubble = Instance.new("ImageLabel")
+    smallTalkBubble.Name        = "SmallTalkBubble"
+    smallTalkBubble.AnchorPoint = Vector2.new(0.5, 1)
+    smallTalkBubble.BackgroundTransparency = 1
+    smallTalkBubble.BorderSizePixel = 0
+    smallTalkBubble.Image           = "rbxasset://textures/ui/dialog_smalltalk.png"
+    smallTalkBubble.ImageColor3     = ChatConstants.GuiColors.BubbleBackground
+    smallTalkBubble.Position        = UDim2.fromScale(0.5, 1)
+    smallTalkBubble.Size            = UDim2.fromOffset(32, 32)
+    smallTalkBubble.Visible         = false
+    smallTalkBubble.Parent          = billboardFrame
+
+    local chatBubbleTail = Instance.new("ImageLabel")
+    chatBubbleTail.Name        = "ChatBubbleTail"
+    chatBubbleTail.AnchorPoint = Vector2.new(0.5, 0)
+    chatBubbleTail.BackgroundTransparency = 1
+    chatBubbleTail.BorderSizePixel = 0
+    chatBubbleTail.Image           = "rbxasset://textures/ui/dialog_tail.png"
+    chatBubbleTail.ImageColor3     = ChatConstants.GuiColors.BubbleBackground
+    chatBubbleTail.Position        = UDim2.new(0.5, 0, 1, 0)
+    chatBubbleTail.Size            = UDim2.fromOffset(24, 12)
+    chatBubbleTail.Parent          = chatBubble
+
+    local bubbleText = Instance.new("TextLabel")
+    bubbleText.Name              = "BubbleText"
+    bubbleText.BackgroundTransparency = 1
+    bubbleText.ClipsDescendants  = true
+    bubbleText.Font              = ChatConstants.BubbleFont
+    bubbleText.Size              = UDim2.fromScale(1, 1)
+    bubbleText.TextColor3        = ChatConstants.GuiColors.BubbleText
+    bubbleText.TextSize          = ChatConstants.BubbleTextSize
+    bubbleText.TextWrapped       = true
+    bubbleText.TextXAlignment    = Enum.TextXAlignment.Left
+    bubbleText.TextYAlignment    = Enum.TextYAlignment.Top
+    bubbleText.Parent            = chatBubble
+
+    local uiPadding = Instance.new("UIPadding")
+    uiPadding.Parent = bubbleText
+    uiPadding.PaddingLeft   = UDim.new(0, 10)
+    uiPadding.PaddingRight  = UDim.new(0, 10)
+    uiPadding.PaddingTop    = UDim.new(0, 6)
+    uiPadding.PaddingBottom = UDim.new(0, 8)
+
+    -- measure & sizing
+    message = ChatUtil.convertRichTextEscapeStrings(message)
+    local textSizeBounds = TextService:GetTextSize(
+        message,
+        bubbleText.TextSize,
+        bubbleText.Font,
+        Vector2.new(MAX_BUBBLE_WIDTH, math.huge)
+    )
+    local multiline = textSizeBounds.Y > bubbleText.TextSize
+    if not multiline then
+        uiPadding.PaddingTop    = UDim.new(0, uiPadding.PaddingTop.Offset/2)
+        uiPadding.PaddingBottom = UDim.new(0, uiPadding.PaddingBottom.Offset/2)
+    end
+
+    local chatBubbleSize = UDim2.fromOffset(
+        textSizeBounds.X + uiPadding.PaddingLeft.Offset + uiPadding.PaddingRight.Offset + 1,
+        textSizeBounds.Y + uiPadding.PaddingTop.Offset + uiPadding.PaddingBottom.Offset
+    )
+
+    -- animate appearance
+    chatBubble.Size = UDim2.fromOffset(chatBubbleSize.X.Offset + 10, chatBubbleSize.Y.Offset + 10)
+    TweenService:Create(chatBubble, resizeBubbleTweenInfo, { Size = chatBubbleSize }):Play()
+    task.delay(resizeBubbleTweenInfo.Time, function()
+        bubbleText.Text = message
+    end)
+
+    chatBubbleGui.Adornee = adornee
+    chatBubbleGui.Parent  = adornee
+
+    local lifetime
+    if sentBySelf then
+        chatBubbleGui.StudsOffset = Vector3.new(0, 1.8, 0)
+        lifetime = lerpLength(bubbleText.Text, MIN_BUBBLE_LIFETIME_SELF, MAX_BUBBLE_LIFETIME_SELF)
+    else
+        chatBubbleGui.StudsOffset = Vector3.new(0, 2.4, 0)
+        lifetime = lerpLength(bubbleText.Text, MIN_BUBBLE_LIFETIME, MAX_BUBBLE_LIFETIME)
+    end
+
+    Debris:AddItem(chatBubbleGui, lifetime + BUBBLE_FADE_TIME + 0.1)
+    addBubbleToQueue(adornee, chatBubbleGui, lifetime)
+
+    task.delay(lifetime, function()
+        local ti = TweenInfo.new(BUBBLE_FADE_TIME, Enum.EasingStyle.Linear)
+        for _, v in ipairs(chatBubbleGui:GetDescendants()) do
+            if v:IsA("ImageLabel") then
+                TweenService:Create(v, ti, { ImageTransparency = 1 }):Play()
+            elseif v:IsA("TextLabel") then
+                TweenService:Create(v, ti, { TextTransparency = 1 }):Play()
+            end
+        end
+    end)
+end
+
+-- //////////////////////////////////////////////////////////////////////////
+-- // CONNECT PLAYERS                                                   //
+-- //////////////////////////////////////////////////////////////////////////
+
+local function connectChatted(player: Player)
+    player.Chatted:Connect(function(msg)
+        local char = player.Character
+        if not char then return end
+        local head = char:FindFirstChild("Head")
+        if not head then return end
+        local isSelf = (player == LocalPlayer)
+        local ok, err = pcall(createBubble, head, msg, isSelf)
+        if not ok then warn("Bubble error:", err) end
+    end)
+end
+
+for _, p in ipairs(Players:GetPlayers()) do
+    connectChatted(p)
+end
+Players.PlayerAdded:Connect(connectChatted)
+
+-- //////////////////////////////////////////////////////////////////////////
+-- // DISTANCE-BASED VISIBILITY LOOP                                     //
+-- //////////////////////////////////////////////////////////////////////////
+
+task.spawn(function()
+    while true do
+        task.wait()
+        for adornee, queue in pairs(chatBubbleQueues) do
+            if #queue == 0 then continue end
+            local dist = (camera.CFrame.Position - adornee:GetPivot().Position).Magnitude
+            for i, bubbleGui in ipairs(queue) do
+                if not bubbleGui.Parent then continue end
+                local frame = bubbleGui:FindFirstChild("BillboardFrame")
+                if not frame then continue end
+                local cb    = frame:FindFirstChild("ChatBubble")
+                local tail  = frame:FindFirstChild("ChatBubbleTail")
+                local small = frame:FindFirstChild("SmallTalkBubble")
+                if dist < NEAR_BUBBLE_DISTANCE then
+                    if cb then cb.Visible     = true end
+                    if tail then tail.Visible = true end
+                    if small then small.Visible = false end
+                    bubbleGui.Enabled = true
+                elseif dist < MAX_BUBBLE_DISTANCE then
+                    if i == 1 then
+                        if cb then cb.Visible     = false end
+                        if tail then tail.Visible = false end
+                        if small then small.Visible = true end
+                        bubbleGui.Enabled = true
+                    else
+                        bubbleGui.Enabled = false
+                    end
+                else
+                    bubbleGui.Enabled = false
+                end
+            end
+        end
+    end
+end)
+
+print("Custom Bubble Chat Loaded with Spacing, Stacking, and Distance Control")
